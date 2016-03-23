@@ -1,0 +1,138 @@
+#!/usr/bin/env ruby
+
+require "awesome_print"
+
+class Graph
+  attr_accessor :nodes
+  attr_accessor :edges
+
+  def initialize
+    @nodes = []
+    @edges = []
+  end
+
+  def add_node(node)
+    nodes << node
+    node.graph = self
+  end
+
+  def add_edge(from, to)
+    # soh adiciona aresta se ela n existe e se from e to sao diferentes
+    if (from!=to) && (get_edge(from,to).nil?)
+      edges << Edge.new(from, to)
+    end
+  end
+  
+  def get_node(id)
+    nodes.select{|n| n.id == id}.first
+  end
+  
+  def get_edge (from,to)
+    edges.select{|e| (e.from == from) && (e.to == to)}.first
+  end
+  
+  def do_commit(id)
+    get_node(id).commit=true
+  end
+end
+
+class Node
+  attr_accessor :graph, :id, :commit
+
+  # def initialize(id,op)
+  #   @id = id
+  #   @ops << op
+  # end
+
+  def initialize(id)
+    @id = id
+    @commit=false
+  end
+
+  def adjacent_edges
+    graph.edges.select{|e| e.from == self}
+  end
+
+  def to_s
+    @ops.each do |op|
+      
+    end
+  end
+end
+
+class Edge
+  attr_accessor :from, :to
+
+  def initialize(from, to)
+    @from, @to = from, to
+  end
+
+  def to_s
+    "#{from.to_s} => #{to.to_s}"
+  end
+  
+end
+
+graph = Graph.new
+ops = {}
+
+line = gets.delete("\n")
+i=0
+while(line.size!=0 && i<10)
+  time, id, op, at = line.split(" ")
+  node = graph.get_node(id)
+  #se nodo ainda nao existe no grafo, insere no grafo
+  if node.nil?
+    graph.add_node(Node.new(id))
+  end
+  # se esta sendo realizada uma operacao R, procura por um W
+  if op.downcase=="r"
+    if !ops[at].nil?
+      ops[at].each do |e|
+        # se encontra um W, cria uma aresta desse nodo até o atual
+        if e[:op].downcase=="w"
+          graph.add_edge(graph.get_node(e[:id]),graph.get_node(id))
+        end
+      end
+    end
+  # se esta sendo realizada uma operacao R, procura por um W
+  elsif op.downcase=="w"
+    if !ops[at].nil?
+      ops[at].each do |e|
+        # se encontra um R ou W, cria uma aresta desse nodo até o atual
+        if e[:op].downcase=="r"
+          graph.add_edge(graph.get_node(e[:id]),graph.get_node(id))
+        elsif e[:op].downcase=="w"
+          graph.add_edge(graph.get_node(e[:id]),graph.get_node(id))
+        end
+      end
+    end
+  # se nao, eh um commit
+  else
+    # procurar por ciclos no grafo e gerar saida
+    # realiza commit do nodo
+    graph.do_commit(id)
+    all_commited=true
+    # confere se todos os nodos realizaram commit
+    graph.nodes.each do |n|
+      if (!n.commit)
+        all_commited=false
+        break
+      end
+    end
+  end
+  # adiciona operacao na lista de operacoes
+  if ops[at].nil?
+    ops[at]=[]
+  end
+  ops[at]<<{"id": id, "time": time, "op": op}
+  # se todos os nodos realizaram commit, faz oq deve fazer
+  if all_commited
+    ap graph
+    ap ops
+    graph = Graph.new
+    ops = {}
+  end
+  # le proxima linha
+  line=gets.delete("\n")
+end

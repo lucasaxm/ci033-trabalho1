@@ -34,6 +34,20 @@ class Graph
   def do_commit(id)
     get_node(id).commit=true
   end
+  
+  def has_loops?
+    ret=false
+    nodes.each do |node|
+      if node.incident_edges.empty?
+        ret=false
+        break
+      end
+      node.adjacent_edges.each do |adj_edges|
+        # funcao recursiva q chega arestas adjacentes em busca do node
+        
+      end
+    end
+  end
 end
 
 class Node
@@ -51,6 +65,16 @@ class Node
 
   def adjacent_edges
     graph.edges.select{|e| e.from == self}
+  end
+  
+  def incident_edges
+    graph.edges.select{|e| e.to == self}
+  end
+
+  def adjacent_node_links_to(node)
+    adjacent_edges.each do |adj|
+      if adj
+    end
   end
 
   def to_s
@@ -76,9 +100,10 @@ end
 graph = Graph.new
 ops = {}
 
-line = gets.delete("\n")
+line = gets
 i=0
-while(line.size!=0 && i<10)
+while(!line.nil?)
+  line = line.delete("\n")
   time, id, op, at = line.split(" ")
   node = graph.get_node(id)
   #se nodo ainda nao existe no grafo, insere no grafo
@@ -132,7 +157,8 @@ while(line.size!=0 && i<10)
     ap ops
     graph = Graph.new
     ops = {}
+    all_commited=false
   end
   # le proxima linha
-  line=gets.delete("\n")
+  line=gets
 end

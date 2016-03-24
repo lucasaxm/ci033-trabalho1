@@ -125,7 +125,7 @@ while(!line.nil?)
       ops[at].each do |e|
         # se encontra um W, cria uma aresta desse nodo até o atual
         if e["op"].downcase=="w"
-          graph.add_edge(graph.get_node(e[:id]),graph.get_node(id))
+          graph.add_edge(graph.get_node(e["id"]),graph.get_node(id))
         end
       end
     end
@@ -135,9 +135,9 @@ while(!line.nil?)
       ops[at].each do |e|
         # se encontra um R ou W, cria uma aresta desse nodo até o atual
         if e["op"].downcase=="r"
-          graph.add_edge(graph.get_node(e[:id]),graph.get_node(id))
+          graph.add_edge(graph.get_node(e["id"]),graph.get_node(id))
         elsif e["op"].downcase=="w"
-          graph.add_edge(graph.get_node(e[:id]),graph.get_node(id))
+          graph.add_edge(graph.get_node(e["id"]),graph.get_node(id))
         end
       end
     end

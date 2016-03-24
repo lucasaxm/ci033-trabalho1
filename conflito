@@ -124,7 +124,7 @@ while(!line.nil?)
     if !ops[at].nil?
       ops[at].each do |e|
         # se encontra um W, cria uma aresta desse nodo até o atual
-        if e[:op].downcase=="w"
+        if e["op"].downcase=="w"
           graph.add_edge(graph.get_node(e[:id]),graph.get_node(id))
         end
       end
@@ -134,9 +134,9 @@ while(!line.nil?)
     if !ops[at].nil?
       ops[at].each do |e|
         # se encontra um R ou W, cria uma aresta desse nodo até o atual
-        if e[:op].downcase=="r"
+        if e["op"].downcase=="r"
           graph.add_edge(graph.get_node(e[:id]),graph.get_node(id))
-        elsif e[:op].downcase=="w"
+        elsif e["op"].downcase=="w"
           graph.add_edge(graph.get_node(e[:id]),graph.get_node(id))
         end
       end
@@ -159,7 +159,7 @@ while(!line.nil?)
   if ops[at].nil?
     ops[at]=[]
   end
-  ops[at]<<{"id": id, "time": time, "op": op}
+  ops[at]<<{"id"=> id, "time"=> time, "op"=> op}
   # se todos os nodos realizaram commit, faz oq deve fazer
   if all_commited
     # ap graph

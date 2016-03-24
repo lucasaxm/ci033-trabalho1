@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require "awesome_print"
-
 class Graph
   attr_accessor :nodes
   attr_accessor :edges
@@ -36,17 +34,19 @@ class Graph
   end
   
   def has_loops?
-    ret=false
     nodes.each do |node|
-      if node.incident_edges.empty?
-        ret=false
-        break
-      end
-      node.adjacent_edges.each do |adj_edges|
-        # funcao recursiva q chega arestas adjacentes em busca do node
-        
+      if (!node.incident_edges.empty?)
+        # puts "!node.incident_edges.empty?: #{!node.incident_edges.empty?}"
+        node.adjacent_edges.each do |adj|
+          # puts "adj.to: #{adj.to}"
+          if adj.to.loop_seeker(node)
+            # puts "adj.to.loop_seeker(node): #{adj.to.loop_seeker(node)}"
+            return true
+          end
+        end
       end
     end
+    return false
   end
 end
 
@@ -71,16 +71,25 @@ class Node
     graph.edges.select{|e| e.to == self}
   end
 
-  def adjacent_node_links_to(node)
-    adjacent_edges.each do |adj|
-      if adj
+  def loop_seeker(node)
+    # puts "node: #{node}"
+    # puts "self: #{self}"
+    # puts "self.adjacent_edges: #{self.adjacent_edges}"
+    if self==node
+      # puts "self==node #{self==node}"
+      return true 
     end
+    self.adjacent_edges.each do |adj|
+      if adj.to.loop_seeker(node)
+        # puts "adj.to.loop_seeker(node): #{adj.to.loop_seeker(node)}"
+        return true 
+      end
+    end
+    return false
   end
 
   def to_s
-    @ops.each do |op|
-      
-    end
+    @id
   end
 end
 
@@ -101,7 +110,7 @@ graph = Graph.new
 ops = {}
 
 line = gets
-i=0
+scheduling_id=1
 while(!line.nil?)
   line = line.delete("\n")
   time, id, op, at = line.split(" ")
@@ -153,8 +162,11 @@ while(!line.nil?)
   ops[at]<<{"id": id, "time": time, "op": op}
   # se todos os nodos realizaram commit, faz oq deve fazer
   if all_commited
-    ap graph
-    ap ops
+    # ap graph
+    # ap ops
+    
+    puts "#{scheduling_id} #{graph.nodes.collect{|n| n.id}.join(',')} #{graph.has_loops? ? 'NAO' : 'SIM'}"
+    scheduling_id+=1
     graph = Graph.new
     ops = {}
     all_commited=false

@@ -36,11 +36,8 @@ class Graph
   def has_loops?
     nodes.each do |node|
       if (!node.incident_edges.empty?)
-        # puts "!node.incident_edges.empty?: #{!node.incident_edges.empty?}"
         node.adjacent_edges.each do |adj|
-          # puts "adj.to: #{adj.to}"
           if adj.to.loop_seeker(node)
-            # puts "adj.to.loop_seeker(node): #{adj.to.loop_seeker(node)}"
             return true
           end
         end
@@ -52,11 +49,6 @@ end
 
 class Node
   attr_accessor :graph, :id, :commit
-
-  # def initialize(id,op)
-  #   @id = id
-  #   @ops << op
-  # end
 
   def initialize(id)
     @id = id
@@ -72,16 +64,11 @@ class Node
   end
 
   def loop_seeker(node)
-    # puts "node: #{node}"
-    # puts "self: #{self}"
-    # puts "self.adjacent_edges: #{self.adjacent_edges}"
     if self==node
-      # puts "self==node #{self==node}"
       return true 
     end
     self.adjacent_edges.each do |adj|
       if adj.to.loop_seeker(node)
-        # puts "adj.to.loop_seeker(node): #{adj.to.loop_seeker(node)}"
         return true 
       end
     end
@@ -160,13 +147,12 @@ while(!line.nil?)
     ops[at]=[]
   end
   ops[at]<<{"id"=> id, "time"=> time, "op"=> op}
-  # se todos os nodos realizaram commit, faz oq deve fazer
+  # se todos os nodos realizaram commit
   if all_commited
-    # ap graph
-    # ap ops
-    
+    # imprime a mensagem da saida
     puts "#{scheduling_id} #{graph.nodes.collect{|n| n.id}.join(',')} #{graph.has_loops? ? 'NAO' : 'SIM'}"
     scheduling_id+=1
+    # cria novo grafo e nova hash de operacoes
     graph = Graph.new
     ops = {}
     all_commited=false

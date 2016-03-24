@@ -1,0 +1,45 @@
+ +------------------------------------------------------------------+
+ | Lucas Affonso X. de Morais - GRR20118372	- Login: laxm11         |
+ | 1º Trabalho de CI303 - 2016/1									|
+ +------------------------------------------------------------------+
+
+Arquivos:
+
+	- conflito: Implementacao do trabalho em Ruby.
+
+Implementação:
+
+	* Foi implementado uma estrutura de grafo, sendo que a classe Graph possui
+	os seguintes atributos:
+	- nodes (array de nós)
+	- edges (array de arestas)
+	e os seguintes métodos:
+	- add_node(node)
+	- add_edge(from, to)
+	- get_node(id)
+	- get_edge (from,to)
+	- do_commit(id)
+	- has_loops?
+	
+	* A classe Node possui os seguintes atributos:
+	- graph, objeto referente ao grafo que o nó pertence.
+	- id, identificador do nó
+	- commit, flag que mostra se o commit ja foi realizado
+	e os seguintes métodos:
+	- adjacent_edges
+	- incident_edges
+	- loop_seeker(node)
+	
+	* A classe Edge possui os seguintes atributos:
+	- from, origem da aresta.
+	- to, destino da aresta.
+	e nenhum método que seja relevante mencionar
+	
+	Para descobrir se o grafo possui ciclos, o algoritmo selecionado foi o de
+	buscar nodo a nodo, através de suas arestas adjacentes, se algum caminho
+	levava devolta ao nodo de origem, caso houvesse algum então o grafo possui
+	ciclos.
+	Para acompanhar as operações executadas, foi utilizada uma hash que
+	armazenava cada operação usando o atributo como chave, assim pude manter
+	em memória de forma organizada todas as operações realizadas antes do
+	commit, para que fosse possível ligar as arestas do grafo.
